@@ -14,15 +14,30 @@ La première version de cet outil était un skill (des instructions suivies dans
 
 L'agent n'a **pas** de liste d'outils restreinte dans sa configuration (`tools:` n'est volontairement pas défini) — il hérite de tous les outils disponibles dans la session qui l'invoque. Ça évite un piège technique : si on avait figé une liste d'outils précise, ça aurait dû inclure le nom technique exact des outils Semrush, qui contient un identifiant propre à chaque installation MCP — et ça aurait cassé si l'agence a le MCP Semrush branché différemment d'ici.
 
-## Comment le brancher sur le Claude Code de l'admin de l'agence
+## Comment l'installer — c'est un vrai plugin
 
-Le plus simple : demander directement au Claude Code de l'agence de faire l'installation. Dans une conversation avec lui, coller ceci :
+Ce repo est structuré comme un plugin Claude Code (`.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json`) — pas besoin de cloner le repo à la main ni de copier de fichier soi-même. Dans Claude Code (ou Cowork, qui utilise le même système de plugins), taper :
 
-> Clone le repo `anto-lem/vision-production-seo-audit-skill`, puis copie le fichier `agents/entreprise-audit-complet.md` dans `~/.claude/agents/entreprise-audit-complet.md` (crée le dossier `~/.claude/agents/` s'il n'existe pas). Ça installera l'agent d'audit numérique complet pour toutes mes conversations.
+```
+/plugin marketplace add anto-lem/vision-production-seo-audit-skill
+/plugin install vision-production-seo-audit-skill@vision-production-seo-audit-skill
+```
 
-Il fera ça tout seul (clone privé — il faut que `gh`/git soit authentifié sur le compte qui a accès au repo, sinon il te le dira).
+Le repo étant **privé**, il faut que la personne qui installe ait accès en lecture au repo GitHub (Antoine doit l'ajouter comme collaborateur sur `anto-lem/vision-production-seo-audit-skill`) et que git/`gh` soit authentifié sur sa machine avec ce compte — sinon la commande échoue à l'étape du clone, pas silencieusement.
 
-### Étapes manuelles équivalentes (si besoin de le faire à la main)
+Une fois installé, l'agent apparaît directement dans la liste des agents disponibles — aucune étape manuelle supplémentaire, et ça marche pareil pour tout le monde à l'agence.
+
+### Mettre à jour le plugin plus tard
+
+Après une modification du repo (nouvelle version poussée sur `main`) :
+
+```
+/plugin marketplace update vision-production-seo-audit-skill
+```
+
+### Si `/plugin` n'est pas disponible (ancienne version de Claude Code)
+
+Repli manuel, équivalent mais sans le système de plugin :
 
 ```bash
 git clone https://github.com/anto-lem/vision-production-seo-audit-skill.git
@@ -30,14 +45,7 @@ mkdir -p ~/.claude/agents
 cp vision-production-seo-audit-skill/agents/entreprise-audit-complet.md ~/.claude/agents/entreprise-audit-complet.md
 ```
 
-Une fois copié, l'agent apparaît automatiquement dans la liste des agents disponibles de ce Claude Code (au pire, ouvrir une nouvelle conversation).
-
-### Mettre à jour l'agent plus tard
-
-```bash
-cd vision-production-seo-audit-skill && git pull
-cp agents/entreprise-audit-complet.md ~/.claude/agents/entreprise-audit-complet.md
-```
+Mise à jour équivalente : `git pull` puis re-copier le fichier par-dessus l'ancien.
 
 ## Utilisation
 
@@ -49,6 +57,13 @@ Une fois installé, demander à ce Claude Code (avec le MCP Semrush connecté) �
 ## Structure du repo
 
 ```
+.claude-plugin/
+├── plugin.json        ← manifest du plugin (nom, description, auteur, licence)
+└── marketplace.json   ← permet d'installer directement depuis ce repo GitHub
 agents/
 └── entreprise-audit-complet.md   ← l'agent complet, un seul fichier autonome
 ```
+
+## Partager l'accès à quelqu'un d'autre à l'agence
+
+Le repo est privé — pour qu'une autre personne (à l'interne, comme un contractant de confiance) puisse faire `/plugin marketplace add`, elle doit être ajoutée comme collaborateur : Settings → Collaborators sur la page GitHub du repo, ou `gh repo add-collaborator anto-lem/vision-production-seo-audit-skill <son-username-github>`. Sans ça, la commande d'installation échoue à l'authentification même si elle connaît le nom du repo.

@@ -1,0 +1,12 @@
+{
+  "name": "vision-production-seo-audit-skill",
+  "version": "1.0.0",
+  "description": "Audit numérique complet d'entreprise (site web, réseaux sociaux, réputation, SEO technique/on-page/backlinks/concurrence, GEO/AEO) — agent Claude Code interne pour Vision Production, connecté au MCP Semrush.",
+  "author": {
+    "name": "Antoine Lemieux"
+  },
+  "homepage": "https://github.com/anto-lem/vision-production-seo-audit-skill",
+  "repository": "https://github.com/anto-lem/vision-production-seo-audit-skill",
+  "license": "UNLICENSED",
+  "keywords": ["seo", "geo", "aeo", "audit", "vision-production"]
+}
